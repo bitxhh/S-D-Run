@@ -9,6 +9,7 @@ from debug import debug
 from data import Data
 from ui import UI
 from overworld import Overworld
+import json
 
 class Game:
     def __init__(self):
@@ -44,6 +45,7 @@ class Game:
 
     def check_game_over(self):
         if self.data.health <= 0:
+            update_data(health=5, coins=0, unlocked_level=0, current_level=0)
             pygame.quit()
             sys.exit()
 
@@ -103,12 +105,20 @@ class Game:
             dt = self.clock.tick() / 1000
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    if self.data.health > 0:
+                        update_data(health=self.data.health, coins=self.data.coins, unlocked_level=self.data.unlocked_level,
+                                    current_level=self.data.unlocked_level)
                     pygame.quit()
                     sys.exit()
             self.check_game_over()
             self.current_stage.run(dt)
             self.ui.update(dt)
             pygame.display.update()
+
+def update_data(**kwargs):
+    with open('data.txt', 'w') as data_file:
+        json.dump(kwargs, data_file)
+        data_file.close()
 
 if __name__ == '__main__':
     game = Game()

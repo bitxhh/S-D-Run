@@ -1,12 +1,16 @@
+import json
 class Data:
     def __init__(self, ui):
         self.ui = ui
-        self._coins = 0
-        self._health = 5
+        with open('data.txt') as data_file:
+            data = json.load(data_file)
+            data_file.close()
+        self._coins = data['coins']
+        self._health = data['health']
         self.ui.create_hearts(self._health)
 
-        self.unlocked_level = 0
-        self.current_level = 0
+        self.unlocked_level = data['unlocked_level']
+        self.current_level = data['current_level']
 
     @property
     def health(self):
